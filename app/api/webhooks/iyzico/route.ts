@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { iyzico } from "@/lib/iyzico";
+import { retrieveCheckoutForm } from "@/lib/iyzico";
 import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const { token, status, paymentId, conversationId } = body;
+        const { token } = body;
 
         // iyzico callback'ten gelen token'ı doğrula
         if (!token) {
@@ -13,12 +13,7 @@ export async function POST(req: Request) {
         }
 
         // Ödeme sonucunu kontrol et
-        const result: any = await new Promise((resolve, reject) => {
-            iyzico.checkoutForm.retrieve({ token }, (err: any, result: any) => {
-                if (err) reject(err);
-                else resolve(result);
-            });
-        });
+        const result: any = await retrieveCheckoutForm(token);
 
         // Ödeme başarılı mı kontrol et
         if (result.status === "success" && result.paymentStatus === "SUCCESS") {
@@ -52,3 +47,4 @@ export async function POST(req: Request) {
         return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
     }
 }
+

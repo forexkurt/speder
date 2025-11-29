@@ -11,7 +11,6 @@
   "dependencies": {
     "@clerk/nextjs": "^6.35.5",
     "@prisma/client": "5.22.0",
-    "iyzipay": "^2.0.64",
     "next": "16.0.3",
     "pdfjs-dist": "^5.4.394",
     "prisma": "5.22.0",
