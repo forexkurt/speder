@@ -18,6 +18,7 @@ export interface SpeedReaderState {
     isPdfLoaded: boolean;
     currentWord: string;
     progress: number;
+    isLoading: boolean;
 }
 
 export interface SpeedReaderActions {
@@ -50,6 +51,7 @@ export const useSpeedReader = (initialText: string = '', initialWpm: number = 30
     // PDF State
     const [pdfPages, setPdfPages] = useState<string[]>([]);
     const [pdfCurrentPage, setPdfCurrentPage] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
 
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -118,17 +120,21 @@ export const useSpeedReader = (initialText: string = '', initialWpm: number = 30
     // PDF Actions
     const loadPdf = async (file: File) => {
         setIsPlaying(false);
+        setIsLoading(true);
         try {
             const { pages } = await extractTextFromPdf(file);
             setPdfPages(pages);
             if (pages.length > 0) {
+                const fullText = pages.join(' ');
                 setPdfCurrentPage(0);
-                setTextState(pages[0]);
+                setTextState(fullText);
                 setCurrentWordIndex(0);
             }
         } catch (error: any) {
             console.error("Failed to load PDF:", error);
             alert(`PDF yüklenirken bir hata oluştu: ${error.message || error}`);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -159,6 +165,7 @@ export const useSpeedReader = (initialText: string = '', initialWpm: number = 30
             pdfPages,
             pdfCurrentPage,
             isPdfLoaded: pdfPages.length > 0,
+            isLoading,
         },
         actions: {
             play,
