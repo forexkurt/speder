@@ -9,14 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@clerk/nextjs": "^6.35.4",
+    "@clerk/nextjs": "^6.35.5",
     "@prisma/client": "5.22.0",
+    "iyzipay": "^2.0.64",
     "next": "16.0.3",
     "pdfjs-dist": "^5.4.394",
     "prisma": "5.22.0",
     "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "stripe": "^20.0.0"
+    "react-dom": "19.2.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
