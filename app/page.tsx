@@ -23,11 +23,10 @@ export default function Home() {
         <section className="flex-grow relative bg-white dark:bg-zinc-900 flex flex-col items-center justify-center overflow-hidden">
 
           {/* Countdown Overlay */}
-          {state.isPlaying && state.currentWordIndex === 0 && (
-            // Note: Countdown logic is handled inside useSpeedReader hook usually, 
-            // but if we need a visual overlay we can add it here.
-            // For now, we'll rely on the hook's delay or add a visual if requested.
-            null
+          {state.countdown !== null && (
+            <div className="absolute inset-0 bg-white/90 dark:bg-zinc-900/95 flex items-center justify-center z-30 backdrop-blur-sm">
+              <span className="text-8xl font-black text-blue-600 animate-pulse">{state.countdown}</span>
+            </div>
           )}
 
           {/* Reader Area */}

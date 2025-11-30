@@ -19,6 +19,7 @@ export interface SpeedReaderState {
     currentWord: string;
     progress: number;
     isLoading: boolean;
+    countdown: number | null;
 }
 
 export interface SpeedReaderActions {
@@ -95,14 +96,42 @@ export const useSpeedReader = (initialText: string = '', initialWpm: number = 30
         return () => clearTimer();
     }, [isPlaying, wpm, words.length, currentWordIndex, nextWord, clearTimer, groupSize]);
 
-    const play = () => setIsPlaying(true);
-    const pause = () => setIsPlaying(false);
-    const togglePlay = () => setIsPlaying((prev) => !prev);
+    const [countdown, setCountdown] = useState<number | null>(null);
+
+    const play = () => {
+        if (isPlaying) return;
+
+        setCountdown(3);
+        const countInterval = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev === null || prev <= 1) {
+                    clearInterval(countInterval);
+                    setIsPlaying(true);
+                    return null;
+                }
+                return prev - 1;
+            });
+        }, 600); // User's code uses 600ms for countdown
+    };
+
+    const pause = () => {
+        setIsPlaying(false);
+        setCountdown(null);
+    };
+
+    const togglePlay = () => {
+        if (isPlaying) {
+            pause();
+        } else {
+            play();
+        }
+    };
 
     const setText = (newText: string) => {
         setTextState(newText);
         setCurrentWordIndex(0);
         setIsPlaying(false);
+        setCountdown(null);
         // Eğer manuel metin girilirse PDF modundan çıkmış oluruz (isteğe bağlı, şimdilik PDF state'i koruyoruz ama text değişiyor)
     };
 
@@ -166,6 +195,7 @@ export const useSpeedReader = (initialText: string = '', initialWpm: number = 30
             pdfCurrentPage,
             isPdfLoaded: pdfPages.length > 0,
             isLoading,
+            countdown,
         },
         actions: {
             play,
